@@ -33,7 +33,7 @@ performTaskTask("authenticate")
 
 function unstableTask(taskName,failureProbability){
     return new Promise ((resolve,reject) =>{
-        const randomValue = math.ranndom();
+        const randomValue = Math.ranndom();
         if(randomValue > failureProbability){
             resolve(`${taskName} completed successfully`);
         }else{ 
@@ -42,4 +42,19 @@ function unstableTask(taskName,failureProbability){
     })
 }
 
-unstableTask("terminate",2)
+async function executeWithRetry(taskName,failureProbability){
+    let attempt = 1
+    let retries = 0
+
+    while(attempt <= retries){
+        try{
+            const result =await unstableTask(taskName,failureProbability);
+            console.log(result)
+        }catch(error){
+            console.log(`Attempt ${attempt} failed: ${error}`)
+            attempt++
+        }
+    }
+    console.log(`Task ${taskName} failed after ${retries}`);
+}
+
